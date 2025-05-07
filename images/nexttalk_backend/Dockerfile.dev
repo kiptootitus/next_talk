@@ -1,0 +1,21 @@
+FROM rust:latest
+
+# Install cargo-watch
+RUN cargo install cargo-watch
+
+WORKDIR /app
+
+# Copy Cargo files first (for caching)
+COPY Cargo.toml Cargo.lock ./
+
+# Pre-build dependencies to speed up reloads
+RUN mkdir src && echo "fn main() {}" > src/main.rs && cargo build && rm -r src
+
+# Copy full source code
+COPY . .
+
+# Expose app port
+EXPOSE 8000
+
+# Run in watch mode (rebuild + restart on file changes)
+CMD ["cargo", "watch", "-x", "run"]

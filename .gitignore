@@ -2,3 +2,4 @@
 **/target
 images/nexttalk_backend/src/main.rs
 images/.env
+.env

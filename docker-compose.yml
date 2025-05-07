@@ -1,27 +1,72 @@
 version: "3.9"
+
 services:
-  backend:
-    build: ./nexttalk_backend
+  # backend:
+  #   build: ./images/nexttalk_backend
+  #   container_name: nexttalk-backend
+  #   ports:
+  #     - "8000:8000"
+  #   depends_on:
+  #     - database
+  #   environment:
+  #     PG_USER: ${PG_USER}
+  #     PG_PASSWORD: ${PG_PASSWORD}
+  #     PG_DB: ${PG_DB}
+  #     PG_HOST: database
+  #     PG_PORT: ${PG_PORT}
+  #   env_file:
+  #     - .env
+  #   restart: unless-stopped
+  backend_dev:
+    build:
+      context: ./images/nexttalk_backend
+      dockerfile: Dockerfile.dev  # <-- use this for hot reload
+    container_name: nexttalk-backend
     ports:
       - "8000:8000"
-    depends_on:
-      - db
+    volumes:
+      - ./images/nexttalk_backend:/app
     environment:
-      DATABASE_URL: postgres://postgres:password@db:5432/nexttalk
+      PG_USER: ${PG_USER}
+      PG_PASSWORD: ${PG_PASSWORD}
+      PG_DB: ${PG_DB}
+      PG_HOST: ${PG_HOST}
+      PG_PORT: ${PG_PORT}
+    env_file:
+      - .env
+    depends_on:
+      - database
+    restart: unless-stopped
 
   frontend:
-    build: ./nexttalk
+    build: ./images/nexttalk
+    container_name: nexttalk-frontend
     ports:
       - "3000:3000"
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:8000
+      NEXT_PUBLIC_API_URL: http://localhost:3000
+    restart: unless-stopped
 
-  db:
-    image: postgres:15
+  database:
+    image: postgres:latest
+    container_name: nexttalk-database
     restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: nexttalk
     ports:
       - "5432:5432"
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_DB: ${PG_DB}
+      PG_HOST: ${PG_HOST}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PG_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
