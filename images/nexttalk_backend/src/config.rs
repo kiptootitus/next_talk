@@ -1,9 +1,5 @@
 use std::env;
-use dotenvy::dotenv;
 
-pub fn load_env() {
-    dotenv().ok();
-}
 
 pub fn get_port() -> u16 {
     env::var("PORT")
