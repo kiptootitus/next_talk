@@ -1,0 +1,1 @@
+{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"gcp_instance","Source":"./modules/gcp_instance","Dir":"modules/gcp_instance"},{"Key":"gcp_volume","Source":"./modules/gcp_volume","Dir":"modules/gcp_volume"},{"Key":"security_group","Source":"./modules/security_group","Dir":"modules/security_group"}]}

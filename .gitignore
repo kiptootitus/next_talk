@@ -4,7 +4,10 @@ images/nexttalk_backend/src/main.rs
 images/.env
 .env
 images/terra/.terraform/providers/registry.terraform.io/hashicorp/google/5.45.2/linux_amd64/terraform-provider-google_v5.45.2_x5
-images/terra/.terraform/terraform.tfstate
-images/terra/.terraform/environment
-images/terra/.terraform.lock.hcl
+***/terraform.tfstate
+***/environment
+***/.terraform.lock.hcl
 images/postgres/initdb.sql
+***/variables.tf
+***/provider.tf
+***/.terraform/providers/registry.terraform.io/hashicorp/google/5.45.2/linux_amd64/terraform-provider-google_v5.45.2_x5
