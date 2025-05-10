@@ -1,29 +1,15 @@
 version: "3.9"
 
 services:
-  # backend:
-  #   build: ./images/nexttalk_backend
-  #   container_name: nexttalk-backend
-  #   ports:
-  #     - "8000:8000"
-  #   depends_on:
-  #     - database
-  #   environment:
-  #     PG_USER: ${PG_USER}
-  #     PG_PASSWORD: ${PG_PASSWORD}
-  #     PG_DB: ${PG_DB}
-  #     PG_HOST: database
-  #     PG_PORT: ${PG_PORT}
-  #   env_file:
-  #     - .env
-  #   restart: unless-stopped
-  backend_dev:
+  backend:
     build:
       context: ./images/nexttalk_backend
-      dockerfile: Dockerfile.dev  # <-- use this for hot reload
+      dockerfile: Dockerfile.dev
     container_name: nexttalk-backend
     ports:
       - "8000:8000"
+    tty: true
+    stdin_open: true
     volumes:
       - ./images/nexttalk_backend:/app
     environment:
@@ -32,6 +18,8 @@ services:
       PG_DB: ${PG_DB}
       PG_HOST: ${PG_HOST}
       PG_PORT: ${PG_PORT}
+      NEXT_PUBLIC_API_URL: http://nexttalk-backend:8000
+
     env_file:
       - .env
     depends_on:
@@ -43,9 +31,13 @@ services:
     container_name: nexttalk-frontend
     ports:
       - "3000:3000"
+    tty: true
+    stdin_open: true
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:3000
+      NEXT_PUBLIC_API_URL: http://nexttalk-backend:8000
     restart: unless-stopped
+    volumes:
+      - ./images/nexttalk:/app
 
   database:
     image: postgres:latest
